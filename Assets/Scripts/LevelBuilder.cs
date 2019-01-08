@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using Pathfinding;
+using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class LevelBuilder : MonoBehaviour
@@ -6,26 +9,74 @@ public class LevelBuilder : MonoBehaviour
     public int width = 100;
     public int height = 100;
     public float perlinScale = 10f;
-
-    public Tile ground;
+    public float wallThreshold = 0.5f;
     public Tile wall;
+    public float duration = 1f;
+
+    public Transform startCircle;
+    public Transform endCircle;
 
     Tilemap tilemap;
+    List<Vector3Int> groundTiles;
+    LinePath lp;
 
     void Start()
     {
         tilemap = GetComponent<Tilemap>();
+        groundTiles = new List<Vector3Int>();
 
         PerlinNoiseGrid noise = new PerlinNoiseGrid(width, height, perlinScale);
 
-        for(int i = 0; i < width; i++)
+        for (int i = 0; i < width; i++)
         {
-            for(int j = 0; j < height; j++)
+            for (int j = 0; j < height; j++)
             {
-                Tile t = (noise[i, j] < 0.5) ? ground : wall;
-                tilemap.SetTile(new Vector3Int(i, j, 0), t);
+                Vector3Int pos = new Vector3Int(i, j, 0);
+
+                if (noise[i, j] < wallThreshold)
+                {
+                    groundTiles.Add(pos);
+                }
+                else
+                {
+                    tilemap.SetTile(pos, wall);
+                }
             }
         }
 
+        StartCoroutine(NextPath());
+    }
+
+    IEnumerator NextPath()
+    {
+        Vector3 start;
+        Vector3 end;
+        List<Vector3> path;
+
+        do
+        {
+            start = tilemap.GetCellCenterWorld(RandomElement(groundTiles));
+            end = tilemap.GetCellCenterWorld(RandomElement(groundTiles));
+
+            path = AStar.FindPath(tilemap, start, end);
+        } while (start == end || path == null || path.Count < 50);
+
+        lp = new LinePath(path);
+        startCircle.position = start;
+        endCircle.position = end;
+
+        yield return new WaitForSeconds(duration);
+
+        StartCoroutine(NextPath());
+    }
+
+    void Update()
+    {
+        lp.Draw();
+    }
+
+    Vector3Int RandomElement(List<Vector3Int> list)
+    {
+        return list[Random.Range(0, list.Count)];
     }
 }
