@@ -6,3 +6,5 @@ Download and Import the Pathfinding [package](https://github.com/antonpantev/pat
 ```c#
 List<Vector3> path = AStar.FindPath(tilemap, startPos, endPos);
 ```
+
+<img src="https://raw.githubusercontent.com/antonpantev/pathfinding/master/PreviewImages/ScreenShot.png">
