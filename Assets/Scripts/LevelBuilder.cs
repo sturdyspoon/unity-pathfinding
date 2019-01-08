@@ -13,16 +13,17 @@ public class LevelBuilder : MonoBehaviour
     public Tile wall;
     public float duration = 1f;
 
+    public LineRenderer lineRenderer;
     public Transform startCircle;
     public Transform endCircle;
 
     Tilemap tilemap;
     List<Vector3Int> groundTiles;
-    LinePath lp;
 
     void Start()
     {
         tilemap = GetComponent<Tilemap>();
+
         groundTiles = new List<Vector3Int>();
 
         PerlinNoiseGrid noise = new PerlinNoiseGrid(width, height, perlinScale);
@@ -61,18 +62,14 @@ public class LevelBuilder : MonoBehaviour
             path = AStar.FindPath(tilemap, start, end);
         } while (start == end || path == null || path.Count < 50);
 
-        lp = new LinePath(path);
+        lineRenderer.positionCount = path.Count;
+        lineRenderer.SetPositions(path.ToArray());
         startCircle.position = start;
         endCircle.position = end;
 
         yield return new WaitForSeconds(duration);
 
-        StartCoroutine(NextPath());
-    }
-
-    void Update()
-    {
-        lp.Draw();
+        //StartCoroutine(NextPath());
     }
 
     Vector3Int RandomElement(List<Vector3Int> list)
