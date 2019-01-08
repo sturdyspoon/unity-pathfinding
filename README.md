@@ -1,5 +1,5 @@
 # Pathfinding
-Find paths in Unity Tilemaps with A* Search
+Find paths in Unity Tilemaps with A* Search based off Amit Patel's implementation.
 
 Download and Import the Pathfinding [package](https://github.com/antonpantev/pathfinding/raw/master/Pathfinding.unitypackage) then use `AStar.FindPath()` like so:
 
