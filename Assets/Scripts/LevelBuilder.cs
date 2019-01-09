@@ -10,6 +10,7 @@ public class LevelBuilder : MonoBehaviour
     public int height = 100;
     public float perlinScale = 10f;
     public float wallThreshold = 0.5f;
+    public int minPathLength = 10;
     public Tile wall;
     public float duration = 1f;
 
@@ -36,11 +37,11 @@ public class LevelBuilder : MonoBehaviour
 
                 if (noise[i, j] < wallThreshold)
                 {
-                    groundTiles.Add(pos);
+                    tilemap.SetTile(pos, wall);
                 }
                 else
                 {
-                    tilemap.SetTile(pos, wall);
+                    groundTiles.Add(pos);
                 }
             }
         }
@@ -60,7 +61,7 @@ public class LevelBuilder : MonoBehaviour
             end = tilemap.GetCellCenterWorld(RandomElement(groundTiles));
 
             path = AStar.FindPath(tilemap, start, end);
-        } while (start == end || path == null || path.Count < 50);
+        } while (start == end || path == null || path.Count < minPathLength);
 
         lineRenderer.positionCount = path.Count;
         lineRenderer.SetPositions(path.ToArray());
@@ -69,7 +70,7 @@ public class LevelBuilder : MonoBehaviour
 
         yield return new WaitForSeconds(duration);
 
-        //StartCoroutine(NextPath());
+        StartCoroutine(NextPath());
     }
 
     Vector3Int RandomElement(List<Vector3Int> list)
