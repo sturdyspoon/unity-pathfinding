@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Pathfinding
+namespace Toolbox
 {
     /// <summary>
     /// A collection of heuristics used in A* Search.

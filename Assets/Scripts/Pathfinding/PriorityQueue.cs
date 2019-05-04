@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Pathfinding
+namespace Toolbox
 {
     public class PriorityQueue<T>
     {

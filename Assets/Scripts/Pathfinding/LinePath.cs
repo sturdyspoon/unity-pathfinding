@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Pathfinding
+namespace Toolbox
 {
     /// <summary>
     /// Line path represents a path of line segments.
